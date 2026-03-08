@@ -2347,6 +2347,18 @@ J'accepte les <a href="#">conditions générales</a> et la <a href="#">politique
 </div>
 </div>
 
+<!-- COD SUCCESS PAGE -->
+<div class="d17-success-overlay" id="codSuccessOverlay">
+<div class="d17-success-box">
+<div class="d17-success-icon"><i class="fas fa-check"></i></div>
+<h3>Commande Confirmée !</h3>
+<p>Votre commande a été enregistrée avec succès. Vous paierez à la livraison. Nous vous contacterons pour confirmer la livraison.</p>
+<div class="order-id-display" id="codOrderId"></div>
+<p style="font-size:0.72rem;">Un récapitulatif a été envoyé au marchand.</p>
+<button class="d17-success-btn" onclick="closeCODSuccess()">Continuer mes achats</button>
+</div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastText"></span></div>
 
@@ -2849,24 +2861,72 @@ const submitBtn = document.getElementById('submitPaymentBtn');
 submitBtn.disabled = true;
 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
 
-setTimeout(() => {
-const fullName = document.getElementById('fullName').value;
+// Collect order data
 const orderId = 'FIM-' + Date.now();
+const fullName = document.getElementById('fullName').value.trim();
+const email = document.getElementById('email').value.trim();
+const phone = document.getElementById('phone').value.trim();
+const governorate = document.getElementById('governorate').value;
+const address = document.getElementById('address').value.trim();
+const postal = document.getElementById('postal').value.trim();
+const city = document.getElementById('city').value.trim();
+const totalEl = document.getElementById('paymentTotal');
+const totalAmount = totalEl ? totalEl.textContent : '0 DT';
+const shippingFeeEl = document.getElementById('paymentShippingFee');
+const shippingFeeText = shippingFeeEl ? shippingFeeEl.textContent : 'Gratuit';
 
+// Build cart items summary
+let cartSummary = '';
+cart.forEach(item => {
+cartSummary += item.name + ' x' + item.qty + ' — ' + (item.price * item.qty) + ' DT\n';
+});
+
+// Send email notification to merchant
+sendCODNotification({
+orderId: orderId,
+totalAmount: totalAmount,
+shippingFee: shippingFeeText,
+clientName: fullName,
+clientEmail: email,
+clientPhone: phone,
+governorate: governorate,
+address: address,
+postalCode: postal,
+city: city,
+cartItems: cartSummary
+}).then(() => {
+// Clear cart
 cart = [];
 updateCart();
 closePayment();
 
-showToast('✓ Commande confirmée ' + orderId);
-
+// Reset main payment form
 setTimeout(() => {
-document.getElementById('shippingForm').reset();
-document.getElementById('agreeTerms').checked = false;
+if (document.getElementById('shippingForm')) document.getElementById('shippingForm').reset();
+if (document.getElementById('agreeTerms')) document.getElementById('agreeTerms').checked = false;
 submitBtn.disabled = false;
 submitBtn.innerHTML = '<i class="fas fa-lock"></i> Finaliser la Commande';
-}, 500);
+}, 300);
 
-}, 1500);
+// Show COD success page
+document.getElementById('codOrderId').textContent = orderId;
+document.getElementById('codSuccessOverlay').classList.add('open');
+document.body.style.overflow = 'hidden';
+
+}).catch((err) => {
+console.error('Email error (COD):', err);
+// Still process the order even if email fails
+cart = [];
+updateCart();
+closePayment();
+
+document.getElementById('codOrderId').textContent = orderId;
+document.getElementById('codSuccessOverlay').classList.add('open');
+document.body.style.overflow = 'hidden';
+
+submitBtn.disabled = false;
+submitBtn.innerHTML = '<i class="fas fa-lock"></i> Finaliser la Commande';
+});
 }
 
 // ========== D17 PAYMENT FLOW ==========
@@ -2982,11 +3042,6 @@ confirmBtn.innerHTML = '<i class="fas fa-check" style="margin-right:8px;"></i>Co
 }
 
 function sendD17Notification(data) {
-const formData = new FormData();
-formData.append('access_key', '');  // Web3Forms key placeholder
-formData.append('subject', '🛒 Nouveau paiement d17 — ' + data.orderId);
-formData.append('from_name', 'FashionInMotion');
-
 const messageBody =
 '══════════════════════════════════\n' +
 '   NOUVEAU PAIEMENT D17 REÇU\n' +
@@ -3005,12 +3060,20 @@ const messageBody =
 data.cartItems + '\n' +
 '══════════════════════════════════';
 
-formData.append('message', messageBody);
-
-// Using formsubmit.co AJAX endpoint
 return fetch('https://formsubmit.co/ajax/assaratraore56@gmail.com', {
 method: 'POST',
-body: formData
+headers: {
+'Content-Type': 'application/json',
+'Accept': 'application/json'
+},
+body: JSON.stringify({
+_subject: 'Nouveau paiement d17 - ' + data.orderId,
+_captcha: 'false',
+_template: 'box',
+name: data.clientName || 'Client',
+email: data.clientEmail || '',
+message: messageBody
+})
 }).then(res => res.json());
 }
 
@@ -3019,11 +3082,60 @@ document.getElementById('d17SuccessOverlay').classList.remove('open');
 document.body.style.overflow = '';
 }
 
-// Close d17 modals on Escape key
+// ========== COD (CASH ON DELIVERY) EMAIL NOTIFICATION ==========
+
+function sendCODNotification(data) {
+const messageBody =
+'══════════════════════════════════\n' +
+'   NOUVELLE COMMANDE — PAIEMENT À LA LIVRAISON\n' +
+'══════════════════════════════════\n\n' +
+'Commande: ' + data.orderId + '\n' +
+'Date: ' + new Date().toLocaleString('fr-FR') + '\n\n' +
+'── INFORMATIONS DU CLIENT ──\n' +
+'Nom: ' + data.clientName + '\n' +
+'Email: ' + data.clientEmail + '\n' +
+'Téléphone: ' + data.clientPhone + '\n\n' +
+'── ADRESSE DE LIVRAISON ──\n' +
+'Adresse: ' + data.address + '\n' +
+'Ville: ' + data.city + '\n' +
+'Code Postal: ' + data.postalCode + '\n' +
+'Gouvernorat: ' + data.governorate + '\n\n' +
+'── ARTICLES COMMANDÉS ──\n' +
+data.cartItems + '\n' +
+'── RÉCAPITULATIF ──\n' +
+'Frais de livraison: ' + data.shippingFee + '\n' +
+'Montant total: ' + data.totalAmount + '\n' +
+'Mode de paiement: À la livraison\n\n' +
+'══════════════════════════════════';
+
+return fetch('https://formsubmit.co/ajax/assaratraore56@gmail.com', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'Accept': 'application/json'
+},
+body: JSON.stringify({
+_subject: 'Nouvelle commande (Livraison) - ' + data.orderId,
+_captcha: 'false',
+_template: 'box',
+name: data.clientName || 'Client',
+email: data.clientEmail || '',
+message: messageBody
+})
+}).then(res => res.json());
+}
+
+function closeCODSuccess() {
+document.getElementById('codSuccessOverlay').classList.remove('open');
+document.body.style.overflow = '';
+}
+
+// Close d17 and COD modals on Escape key
 document.addEventListener('keydown', function(e) {
 if (e.key === 'Escape') {
 if (document.getElementById('d17Overlay').classList.contains('open')) closeD17();
 if (document.getElementById('d17SuccessOverlay').classList.contains('open')) closeD17Success();
+if (document.getElementById('codSuccessOverlay').classList.contains('open')) closeCODSuccess();
 }
 });
 
