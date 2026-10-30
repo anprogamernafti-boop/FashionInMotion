@@ -58,4 +58,3 @@ Les formulaires transmettent les détails de commande au destinataire FormSubmit
 ## À propos
 
 Projet personnel réalisé par Asser Nafti. Les captures présentées ci-dessus proviennent de la boutique publiée.
-
