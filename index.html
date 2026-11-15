@@ -130,12 +130,15 @@ transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 .preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 .preloader-logo {
-font-family: 'Playfair Display', serif;
-font-size: 2rem; font-weight: 700; letter-spacing: 3px;
-color: var(--gold);
+width: min(280px, 72vw); aspect-ratio: 900 / 768;
 opacity: 0; animation: preloaderFade 0.8s ease 0.2s forwards;
 }
-.preloader-logo span { font-weight: 400; color: var(--text); font-style: italic; }
+.preloader-logo img,
+.nav-logo img {
+width: 100%; height: 100%; display: block;
+object-fit: contain; border-radius: 50%;
+background: #f7f6ef;
+}
 .preloader-bar {
 width: 200px; height: 1px; background: rgba(201,168,76,0.2);
 position: relative; overflow: hidden;
@@ -182,13 +185,10 @@ border-bottom: 1px solid rgba(201,168,76,0.06);
 box-shadow: 0 4px 40px rgba(0,0,0,0.4);
 }
 .nav-logo {
-font-family: 'Playfair Display', serif;
-font-size: 1.4rem; font-weight: 700; letter-spacing: 3px;
-color: var(--gold);
-text-decoration: none;
-transition: var(--transition);
+width: 112px; height: 96px; flex: 0 0 auto;
+text-decoration: none; transition: var(--transition);
 }
-.nav-logo span { font-weight: 400; color: var(--text-light); font-style: italic; font-size: 1.2rem; }
+.nav-logo:hover { transform: translateY(-2px); }
 .nav-links { display: flex; gap: 40px; list-style: none; }
 .nav-links a {
 color: var(--text-light); text-decoration: none; font-size: 0.7rem;
@@ -893,7 +893,7 @@ background: var(--dark2);
 display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr;
 gap: 60px; max-width: 1300px; margin: 0 auto;
 }
-.footer-brand .nav-logo { font-size: 1.3rem; }
+.footer-brand .nav-logo { width: 150px; height: 128px; }
 .footer-brand p {
 color: var(--text-muted); font-size: 0.85rem; margin-top: 18px;
 font-weight: 300; line-height: 1.9; max-width: 320px;
@@ -1694,7 +1694,7 @@ cursor: pointer; transition: var(--transition);
 
 <!-- PRELOADER -->
 <div class="preloader" id="preloader">
-<div class="preloader-logo">FASHION<span>in</span>MOTION</div>
+<div class="preloader-logo"><img src="assets/logoFIM.jpg" alt="Fashion In Motion" width="900" height="768"></div>
 <div class="preloader-bar"></div>
 <div class="preloader-tagline">Luxe & Élégance</div>
 </div>
@@ -1711,7 +1711,7 @@ cursor: pointer; transition: var(--transition);
 
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
-<a href="#" class="nav-logo">FASHION<span>in</span>MOTION</a>
+<a href="#" class="nav-logo"><img src="assets/logoFIM.jpg" alt="Fashion In Motion" width="900" height="768"></a>
 <ul class="nav-links">
 <li><a href="#collections">Collections</a></li>
 <li><a href="#boutique">Boutique</a></li>
@@ -2055,7 +2055,7 @@ Ajouter au Panier <i class="fas fa-arrow-right" style="font-size:0.6rem"></i>
 <footer class="footer">
 <div class="footer-grid">
 <div class="footer-brand">
-<a href="#" class="nav-logo">FASHION<span>in</span>MOTION</a>
+<a href="#" class="nav-logo"><img src="assets/logoFIM.jpg" alt="Fashion In Motion" width="900" height="768"></a>
 <p>Maison de luxe dédiée à l'excellence du savoir-faire et à l'élégance intemporelle. Chaque création est une promesse de qualité.</p>
 <div class="footer-social" id="contact">
 <a href="https://www.instagram.com/asser_nafti?igsh=MWY2dWd6ZTRkM2xieg%3D%3D" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>

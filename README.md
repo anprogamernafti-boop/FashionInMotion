@@ -3,7 +3,7 @@
 ### Boutique de mode responsive avec panier et parcours de commande en ligne
 
 <p align="center">
-  <img src="assets/screenshots/home.jpg" alt="Page d’accueil de Fashion In Motion" width="820">
+  <img src="assets/logoFIM.jpg" alt="Logo officiel de Fashion In Motion" width="420">
 </p>
 
 <p align="center">
