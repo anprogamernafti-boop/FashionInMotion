@@ -10,7 +10,7 @@
   </p>
 
   <p>
-    <a href="https://anprogamernafti-boop.github.io/FashionInMotion/"><strong>Voir la boutique en ligne</strong></a>
+    <a href="https://fashioninmotion.tn"><strong>Voir la boutique en ligne</strong></a>
     ·
     <a href="https://github.com/anprogamernafti-boop/FashionInMotion"><strong>Explorer le code</strong></a>
   </p>
@@ -99,7 +99,7 @@ Le formulaire utilise l'adresse FormSubmit configurée dans `index.html`. Avant 
 
 La version en ligne est publiée automatiquement sur GitHub Pages :
 
-**[anprogamernafti-boop.github.io/FashionInMotion](https://fashioninmotion.tn)**
+**[fashioninmotion.tn](https://fashioninmotion.tn)**
 
 ## À propos
 
