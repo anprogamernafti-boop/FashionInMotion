@@ -99,7 +99,7 @@ Le formulaire utilise l'adresse FormSubmit configurée dans `index.html`. Avant 
 
 La version en ligne est publiée automatiquement sur GitHub Pages :
 
-**[anprogamernafti-boop.github.io/FashionInMotion](https://anprogamernafti-boop.github.io/FashionInMotion/)**
+**[anprogamernafti-boop.github.io/FashionInMotion](https://fashioninmotion.tn)**
 
 ## À propos
 
